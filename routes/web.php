@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,3 +30,20 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/articles/create',function(){
+    return view('articles/create');
+ });
+ 
+
+Route::post('/articles', function(){
+    return 'hello';
+});
+
+Route::post('/articles', function(Request $request) {
+    $validatedData = $request->validate([
+        'body' => 'required|string|max:255',
+    ]);
+
+    return 'hello';
+});
