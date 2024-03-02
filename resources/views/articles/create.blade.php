@@ -16,7 +16,6 @@
    @enderror
    <button class="mt-3 py-1 px-3 bg-black text-white rounded text-5">저장하기</button>
 </form>
-{{dd($errors->all())}}
 </div>
 </body>
 </html>
