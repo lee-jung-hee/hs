@@ -36,14 +36,28 @@ Route::get('/articles/create',function(){
  });
  
 
-Route::post('/articles', function(){
-    return 'hello';
-});
-
 Route::post('/articles', function(Request $request) {
-    $validatedData = $request->validate([
+    $input = $request->validate([
         'body' => 'required|string|max:255',
     ]);
+
+    $host = config('database.connections.mysql.host');
+    $database = config('database.connections.mysql.database');
+    $username = config('database.connections.mysql.username');
+    $password = config('database.connections.mysql.password');
+
+
+    //pdo객체를 만들고
+    $conn = new PDO("mysql:host=$host;dbname=$database", $username, $password);
+
+    //쿼리 준비
+    $stmt = $conn->prepare("INSERT INTO article (body, user_id VALUE (:body, :userId)");
+
+    
+    $body = $request->input('body'); //body만 가져올 때, request->all하면 배열형식으로 모든 정보를 다 가져옴, request->collect하면 collect로 가져옴(내용은 똑같이 배열로 되어있음)
+    //쿼리 값을 설정
+    $stmt->bindValue(':body',$input['body']);
+    $stmt->bindValue(':userId', Auth::id());
 
     return 'hello';
 });
