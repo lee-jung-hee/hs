@@ -4,6 +4,9 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use App\Models\Article;
 
 
 /*
@@ -43,6 +46,7 @@ Route::post('/articles', function (Request $request) {
         'body' => 'required|string|max:255',
     ]);
 
+    // 여기서부터 생 PHP코드
     // $host = config('database.connections.mysql.host');
     // $database = config('database.connections.mysql.database');
     // $username = config('database.connections.mysql.username');
@@ -64,7 +68,25 @@ Route::post('/articles', function (Request $request) {
     // // 실행
     // $stmt->execute();
 
-    DB::statement("INSERT INTO articles (body, user_id) VALUES (:body, userId)", ['body' => $input['body'], 'userId' => Auth::id()]);
+    // 여기서부터는 킹갓제너럴 1줄로 끝내는 라라벨
+    // DB::statement("INSERT INTO articles (body, user_id) VALUES (:body, :userId)", ['body' => $input['body'], 'userId' => Auth::id()]);
 
-    return 'hello';
+    // 쿼리 빌더를 사용하는 법
+    // DB::table('articles')->insert([
+    //     'body' => $input['body'],
+    //     'user_id' => Auth::id()
+    // ]);
+    
+    // 여기서 부터는 킹 갓 엠퍼러 제너럴 충무공 마제스티 엘로퀀트 ORM
+    // $article = new Article;
+    // $article->body = $input['body'];
+    // $article->user_id = Auth::id();
+    // $article->save();
+
+    Article::create([
+        'body'=> $input['body'],
+        'user_id'=> Auth::id()
+    ]);
+
+    return '글이 등록되었습니다.';
 });
