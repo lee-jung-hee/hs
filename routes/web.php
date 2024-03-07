@@ -90,3 +90,11 @@ Route::post('/articles', function (Request $request) {
 
     return '글이 등록되었습니다.';
 });
+
+Route::get('articles', function(Request $request) {
+    $articles = Article::select('user_id', 'body', 'created_at')
+    // ->orderby('created_at','desc') 이거 대신 lasted()
+    ->latest()
+    ->get();
+    return view('articles.index', ['articles'=> $articles]);
+});

@@ -7,7 +7,7 @@
 </head>
 <body>
     <div class="container p-5">
-   <h1 class="text-xl">글쓰기</h1>
+   <h1 class="text-xl">글쓰기</h1><a href="/">HOME</a>
 <form action="/articles" method="POST" class="mt-5">
    @csrf
    <input type="text" name="body" class="block w-full mb-2 rounded" value="{{old('body')}}">
