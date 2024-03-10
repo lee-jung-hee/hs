@@ -12,9 +12,10 @@
     <div class="border-2 border-black rounded-2xl mt-5 p-4">
         <p>{{$article->user_id}}</p>
         <p>{{$article->body}}</p>
-        <p>{{$article->created_at}}</p>
+        <p>{{$article->created_at->diffForHumans()}}</p>
     </div>
     @endforeach
 </div>
+{{ $articles->links() }}
 </body>
 </html>

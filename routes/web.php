@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\Article;
+use Illuminate\Support\Carbon;
 
 
 /*
@@ -46,7 +47,7 @@ Route::post('/articles', function (Request $request) {
         'body' => 'required|string|max:255',
     ]);
 
-    // 여기서부터 생 PHP코드
+    // // 여기서부터 생 PHP코드
     // $host = config('database.connections.mysql.host');
     // $database = config('database.connections.mysql.database');
     // $username = config('database.connections.mysql.username');
@@ -83,18 +84,23 @@ Route::post('/articles', function (Request $request) {
     // $article->user_id = Auth::id();
     // $article->save();
 
-    Article::create([
-        'body'=> $input['body'],
-        'user_id'=> Auth::id()
-    ]);
+    // Article::create([
+    //     'body'=> $input['body'],
+    //     'user_id'=> Auth::id()
+    // ]);
 
     return '글이 등록되었습니다.';
 });
 
 Route::get('articles', function(Request $request) {
+    $perPage = $request->input('per_page', 3);
+
+
     $articles = Article::select('user_id', 'body', 'created_at')
-    // ->orderby('created_at','desc') 이거 대신 lasted()
     ->latest()
-    ->get();
-    return view('articles.index', ['articles'=> $articles]);
+    ->paginate($perPage);
+
+    $totalCount = Article::count();
+
+    return view('articles.index',['articles'=> $articles]);
 });
