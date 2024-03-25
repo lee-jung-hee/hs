@@ -76,12 +76,12 @@ Route::get('articles/{article}', function(Article $article) {
     return view('articles.show', ['article' => $article]);
 })->name('articles.show');
 
-Route::get('articles/{article}/edit', function(Article $article) {
+Route::put('articles/{article}/edit', function(Article $article) {
     return view('articles.edit', ['article'=> $article]);
 })->name('articles.edit');
 
 
-Route::put('articles/{article}', function (Request $request, Article $article) {
+Route::patch('articles/{article}', function (Request $request, Article $article) {
     $input = $request->validate([
         'body' => 'required|string|max:255',
     ]);
@@ -92,4 +92,8 @@ Route::put('articles/{article}', function (Request $request, Article $article) {
     return redirect()->route('articles.index');
 })->name('articles.update');
 
+Route::delete('articles/{article}', function(Article $article) {
+    $article->delete();
 
+    return redirect()->route('articles.index');
+})->name('articles.delete');

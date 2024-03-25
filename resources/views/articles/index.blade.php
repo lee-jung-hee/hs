@@ -14,7 +14,16 @@
                 <p>{{$article->user->name}}</p>
                 <p>{{$article->body}}</p>
                 <p><a href="{{route('articles.show',['article'=>$article->id])}}">{{$article->created_at->diffForHumans()}}</a></p>
-                <p><a href="{{route('articles.edit',['article'=>$article->id])}}">수정</a></p>
+                <div>
+                    <p>
+                        <a href="{{route('articles.edit',['article'=>$article->id])}}">수정</a>
+                    </p>
+                    <form action="{{ route('articles.delete', ['article' => $article->id]) }}" method="POST">
+                        @csrf  
+                        @method('DELETE')
+                        <button class="py-1 px-3 bg-black text-white rounded text-xs">삭제하기</button>
+                    </form> 
+                </div>
             </div>
         @endforeach
         {{ $articles->links() }}
