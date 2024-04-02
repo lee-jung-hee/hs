@@ -22,7 +22,7 @@
                         @csrf  
                         @method('DELETE')
                         <button class="py-1 px-3 bg-black text-white rounded text-xs">삭제하기</button>
-                    </form> 
+                    </form>
                 </div>
             </div>
         @endforeach

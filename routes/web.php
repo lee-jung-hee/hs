@@ -2,6 +2,7 @@
 
 // 네임스페이스를 사용하여 클래스를 임포트합니다.
 use App\Http\Controllers\ProfileController; // ProfileController 클래스 임포트
+use App\Http\Controllers\ArticleController;
 use Illuminate\Support\Facades\Route; // 라우트를 정의하기 위한 Route 퍼사드
 use Illuminate\Http\Request; // HTTP 요청을 캡슐화하는 클래스
 use Illuminate\Support\Facades\Auth; // 사용자 인증을 위한 Auth 퍼사드
@@ -33,67 +34,20 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__ . '/auth.php'; // 다른 PHP 파일 포함
 
-// '/articles/create' 경로로 GET 요청이 오면 articles/create 뷰를 반환하는 라우트 정의
-Route::get('/articles/create', function () {
-    return view('articles/create');
-})->name('articles.create');
-
-// '/articles' 경로로 POST 요청이 오면 글 등록 처리를 수행하는 라우트 정의
-Route::post('/articles', function (Request $request) {
-    // 요청 데이터 검증
-    $input = $request->validate([
-        'body' => 'required|string|max:255',
-    ]);
-
-    $article = new Article();
-    $article->body = $input['body'];
-    $article->user_id = Auth::id();
-    $article->save();
-
-    // 등록 성공 메시지 반환
-    return redirect()->route('articles.index');
-})->name('articles.store');
-
-// '/articles' 경로로 GET 요청이 오면 Article 모델을 사용하여 글 목록을 조회하는 라우트 정의
-Route::get('articles', function(Request $request) {
-    // 페이지당 글 수를 요청에서 가져오거나 기본값 설정
-    $perPage = $request->input('per_page', 3);
-
-    // Article 모델을 사용하여 글을 최신순으로 페이지네이션하여 조회
-    $articles = Article::with('user')
-        ->select()
-        ->latest()
-        ->paginate($perPage);
-
-    // 조회된 글 목록을 articles.index 뷰에 전달하여 반환
-    return view('articles.index', ['articles'=> $articles]);
-})->name('articles.index');
-
-// '/articles/{article}' 경로로 GET 요청이 오면 Article 모델 인스턴스를 사용하여 특정 글을 보여주는 라우트 정의
-// {article} 파라미터는 Article 모델 인스턴스로 자동 바인딩됨
-Route::get('articles/{article}', function(Article $article) {
-    // 조회된 Article 모델 인스턴스를 articles.show 뷰
-    return view('articles.show', ['article' => $article]);
-})->name('articles.show');
-
-Route::put('articles/{article}/edit', function(Article $article) {
-    return view('articles.edit', ['article'=> $article]);
-})->name('articles.edit');
-
-
-Route::patch('articles/{article}', function (Request $request, Article $article) {
-    $input = $request->validate([
-        'body' => 'required|string|max:255',
-    ]);
-
-    $article->body = $input['body'];
-    $article->save();
-
-    return redirect()->route('articles.index');
-})->name('articles.update');
-
-Route::delete('articles/{article}', function(Article $article) {
-    $article->delete();
-
-    return redirect()->route('articles.index');
-})->name('articles.delete');
+Route::controller(ArticleController::class)->group(function () {
+    Route::get('/articles/create', 'create')->name('articles.create');
+    Route::post('/articles', 'store')->name('articles.store');
+    Route::get('articles', 'index')->name('articles.index');
+    Route::get('articles/{article}', 'show')->name('articles.show');
+    Route::get('articles/{article}/edit', 'edit')->name('articles.edit');
+    Route::patch('articles/{article}', 'update')->name('articles.update');
+    Route::delete('articles/{article}', 'destroy')->name('articles.delete');
+});
+//위 처럼 그룹으로 묶어주면 아래처럼 반복되는 컨트롤러를 생략할 수 있다
+    // Route::get('/articles/create', [ArticleController::class, 'create'])->name('articles.create');
+    // Route::post('/articles', [ArticleController::class, 'store'])->name('articles.store');
+    // Route::get('articles', [ArticleController::class, 'index'])->name('articles.index');
+    // Route::get('articles/{article}', [ArticleController::class, 'show'])->name('articles.show');
+    // Route::get('articles/{article}/edit', [ArticleController::class, 'edit'])->name('articles.edit');
+    // Route::patch('articles/{article}', [ArticleController::class, 'update'])->name('articles.update');
+    // Route::delete('articles/{article}', [ArticleController::class, 'destroy'])->name('articles.delete');
