@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Article extends Model
 {
+    use HasFactory;
     // 모델에서 타임스탬프를 사용하도록 설정
     public $timestamps = true;
 

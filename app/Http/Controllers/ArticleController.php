@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth')->except(['index','show']);
+        
+    }
     public function create() {
         return view('articles/create');
     }
@@ -46,10 +51,15 @@ class ArticleController extends Controller
     }
 
     public function edit(Article $article) {
+        $this->authorize('update',$article);
+
         return view('articles.edit', ['article'=> $article]);
     }
 
     public function update(Request $request, Article $article) {
+        $this->authorize('update',$article);
+        //얘는 authorize를 실패하게 되면 자동으로 응답까지 만들어서 내보내줌
+
         $input = $request->validate([
             'body' => 'required|string|max:255',
         ]);
@@ -61,6 +71,8 @@ class ArticleController extends Controller
     }
 
     public function destroy(Article $article) {
+        $this->authorize('delete',$article);
+
         $article->delete();
 
         return redirect()->route('articles.index');

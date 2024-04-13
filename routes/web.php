@@ -34,20 +34,4 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__ . '/auth.php'; // 다른 PHP 파일 포함
 
-Route::controller(ArticleController::class)->group(function () {
-    Route::get('/articles/create', 'create')->name('articles.create');
-    Route::post('/articles', 'store')->name('articles.store');
-    Route::get('articles', 'index')->name('articles.index');
-    Route::get('articles/{article}', 'show')->name('articles.show');
-    Route::get('articles/{article}/edit', 'edit')->name('articles.edit');
-    Route::patch('articles/{article}', 'update')->name('articles.update');
-    Route::delete('articles/{article}', 'destroy')->name('articles.delete');
-});
-//위 처럼 그룹으로 묶어주면 아래처럼 반복되는 컨트롤러를 생략할 수 있다
-    // Route::get('/articles/create', [ArticleController::class, 'create'])->name('articles.create');
-    // Route::post('/articles', [ArticleController::class, 'store'])->name('articles.store');
-    // Route::get('articles', [ArticleController::class, 'index'])->name('articles.index');
-    // Route::get('articles/{article}', [ArticleController::class, 'show'])->name('articles.show');
-    // Route::get('articles/{article}/edit', [ArticleController::class, 'edit'])->name('articles.edit');
-    // Route::patch('articles/{article}', [ArticleController::class, 'update'])->name('articles.update');
-    // Route::delete('articles/{article}', [ArticleController::class, 'destroy'])->name('articles.delete');
+Route::resource('articles', ArticleController::class);
